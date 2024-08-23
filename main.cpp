@@ -49,12 +49,19 @@ int main()
     RenderWindow app(VideoMode(width,height), "Racing!");
     app.setFramerateLimit(60);
 
+    //set the background
+
+    Texture bg;
+    bg.loadFromFile("bg.png");
+    bg.setRepeated(true);
+    Sprite sBackground(bg);
+
     //I guess add lines?
 
     std::vector<Line> lines;
 
     // the for cycle should be the total length of the road
-
+    //x
     for (int i = 0; i<1600;i++)
     {
         Line line;
