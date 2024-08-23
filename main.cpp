@@ -1,4 +1,7 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <math.h>
+
 using namespace sf;
 
 //window size
@@ -12,7 +15,8 @@ struct Line
 {
     float x,y,z;
     float X,Y,W;
-    float scale;
+    //curve is for the curve; adding it to struct line
+    float scale, curve;
 
     Line() {x,y,z=0;}
 
@@ -45,12 +49,20 @@ int main()
     RenderWindow app(VideoMode(width,height), "Racing!");
     app.setFramerateLimit(60);
 
+    //I guess add lines?
+
     std::vector<Line> lines;
+
+    // the for cycle should be the total length of the road
 
     for (int i = 0; i<1600;i++)
     {
         Line line;
         line.z =i*segL;
+        //tell at what pos the curve will b Added
+        if (i>300 && i<700) line.curve=0.5; // also curve is the angle of the curve; FLOAT
+        //tell at what pos the hill will b Added
+        if (i>750) line.y = sin(i/30.0)*1500;
 
         lines.push_back(line);
     }
@@ -76,12 +88,26 @@ int main()
 
     app.clear();
     int startPos = pos/segL;
+    //this for the hills?
+    int camH = 1500 + 1 + lines[startPos].y;
+    //this for the curves?
+    float x=0, dx=0;
+    //this for the hill height?
+    int maxy = height;
 
     //draw road//
     for(int n=startPos; n<startPos+300;n++)
     {
         Line &l = lines[n%N];
-        l.project(playerX, 1500,pos-5);
+        l.project(playerX - x, camH,pos);
+        //adding this for the curves ?
+        x+=dx;
+        dx+=l.curve;
+
+        //what was (l.Y) ?
+
+        if (l.Y>=maxy) continue;
+        maxy =  l.Y;
 
         Color grass = (n/3)%2?Color(16,200,16):Color(0,154,0);
         Color rumble = (n/3)%2?Color(255,255,255):Color(0,0,0);
